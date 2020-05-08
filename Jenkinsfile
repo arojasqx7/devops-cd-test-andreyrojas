@@ -1,8 +1,14 @@
 pipeline {
     agent none
+    
+    tools {
+        "org.jenkinsci.plugins.terraform.TerraformInstallation" "terraform-0.12.6"
+    }
 
     environment {
-        DOCKER_HUB_PASS     = credentials('DockerHubPass')
+        DOCKER_HUB_PASS   = credentials('DockerHubPass')
+        ACCESS_KEY        = credentials('AWS_ACCESS_KEY_ID') 
+        SECRET_KEY        = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
     stages {
@@ -25,7 +31,9 @@ pipeline {
                         label 'aws-slave-1'
                     }
                     steps {
-                        sh 'cd backend && docker-compose up -d'
+                        dir('backend') {
+                            sh 'docker-compose up -d'
+                        }
                     }
                 }
             }
@@ -55,6 +63,36 @@ pipeline {
                             docker push arojasqx7/spring-boot-realworld-example-app:latest
                         '''
                     }
+                }
+            }
+        }
+        stage('Terraform Init') {
+            agent { 
+                label 'aws-master'
+            }
+            steps {
+                dir('terraform') {
+                    sh 'terraform init'
+                }
+            }
+        }
+        stage('Terraform Plan') {
+            agent { 
+                label 'aws-master'
+            }
+            steps {
+                dir('terraform') {
+
+                }
+            }
+        }
+        stage('Terraform Apply') {
+            agent { 
+                label 'aws-master'
+            }
+            steps {
+                dir('terraform') {
+
                 }
             }
         }

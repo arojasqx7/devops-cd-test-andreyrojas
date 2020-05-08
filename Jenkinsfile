@@ -1,8 +1,6 @@
 pipeline {
     agent none
 
-    environment {
-    }
     stages {
         stage('Build Docker Images') {
             parallel {

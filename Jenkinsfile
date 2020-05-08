@@ -15,7 +15,7 @@ pipeline {
                     steps {
                         script {
                             def frontendImage = docker.build("frontend-gl:$BUILD_NUMBER", "./frontend")
-                            env.ANGULAR_IMAGE = "frontend-gl:$BUILD_NUMBER"
+                            env.ANGULAR_IMAGE = "arojasqx7/frontend-gl" + ":$BUILD_NUMBER"
                         }
                     }
                 }

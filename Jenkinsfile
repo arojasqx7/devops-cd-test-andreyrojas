@@ -1,6 +1,10 @@
 pipeline {
     agent none
 
+    environment {
+        DOCKER_HUB_PASS     = credentials('DockerHubPass')
+    }
+
     stages {
         stage('Build Docker Images') {
             parallel {
@@ -11,6 +15,7 @@ pipeline {
                     steps {
                         script {
                             def frontendImage = docker.build("frontend-gl:$BUILD_NUMBER", "./frontend")
+                            env.ANGULAR_IMAGE = "frontend-gl:$BUILD_NUMBER"
                         }
                     }
                 }
@@ -20,6 +25,21 @@ pipeline {
                     }
                     steps {
                         sh 'cd backend && docker-compose up -d'
+                    }
+                }
+            }
+        }
+        stage('Publish Images') {
+            parallel {
+                stage('Publish Frontend Image') {
+                    agent {
+                        label 'aws-master'
+                    }
+                    steps {
+                      sh """ 
+                          docker login -u arojasqx7 -p $DOCKER_HUB_PASS"
+                          docker push ${env.ANGULAR_IMAGE}
+                        """
                     }
                 }
             }

@@ -16,6 +16,7 @@ pipeline {
                         script {
                             def frontendImage = docker.build("frontend-gl:$BUILD_NUMBER", "./frontend")
                             env.ANGULAR_IMAGE = "frontend-gl:$BUILD_NUMBER"
+                            echo "Angular Image is ${env.ANGULAR_IMAGE}"
                         }
                     }
                 }
@@ -37,8 +38,8 @@ pipeline {
                     }
                     steps {
                         sh "docker login -u arojasqx7 -p $DOCKER_HUB_PASS"
-                        sh "docker tag frontend-gl:7 arojasqx7/${env.ANGULAR_IMAGE}"
-                        sh "docker push ${env.ANGULAR_IMAGE}"
+                        sh "docker tag ${env.ANGULAR_IMAGE} arojasqx7/${env.ANGULAR_IMAGE}"
+                        sh "docker push arojasqx7/${env.ANGULAR_IMAGE}"
                     }
                 }
             }

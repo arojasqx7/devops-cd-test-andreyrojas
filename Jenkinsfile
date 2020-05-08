@@ -42,6 +42,20 @@ pipeline {
                         sh "docker push arojasqx7/${env.ANGULAR_IMAGE}"
                     }
                 }
+                stage('Publish Backend Images') {
+                    agent {
+                        label 'aws-slave-1'
+                    }
+                    steps {
+                        sh "docker login -u arojasqx7 -p $DOCKER_HUB_PASS"
+                        sh '''
+                            docker tag mysql:latest arojasqx7/mysql:latest
+                            docker tag allthethings/spring-boot-realworld-example-app:latest arojasqx7/allthethings/spring-boot-realworld-example-app:latest
+                            docker push arojasqx7/mysql:latest
+                            docker push arojasqx7/allthethings/spring-boot-realworld-example-app:latest
+                        '''
+                    }
+                }
             }
         }
     }

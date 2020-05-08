@@ -36,10 +36,8 @@ pipeline {
                         label 'aws-master'
                     }
                     steps {
-                      sh """ 
-                          docker login -u arojasqx7 -p $DOCKER_HUB_PASS"
-                          docker push ${env.ANGULAR_IMAGE}
-                        """
+                        sh "docker login -u arojasqx7 -p $DOCKER_HUB_PASS"
+                        sh "docker push ${env.ANGULAR_IMAGE}"
                     }
                 }
             }

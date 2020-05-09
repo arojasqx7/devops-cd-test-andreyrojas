@@ -9,7 +9,7 @@ resource "aws_instance" "swarm-infra-fe-instances" {
   instance_type          = "t2.medium"
   key_name               = "${var.keyname}"
   vpc_security_group_ids = ["${aws_security_group.sg_frontend.id}"]
-  subnet_id              = "${aws_subnet.public-subnet-1.id}"
+  subnet_id              = "${aws_subnet.infra-subnet-1.id}"
   count                  = "3"  
 
   associate_public_ip_address = true
@@ -23,7 +23,7 @@ resource "aws_instance" "swarm-infra-be-instances" {
   instance_type          = "t2.medium"
   key_name               = "${var.keyname}"
   vpc_security_group_ids = ["${aws_security_group.sg_backend.id}"]
-  subnet_id              = "${aws_subnet.public-subnet-1.id}"
+  subnet_id              = "${aws_subnet.infra-subnet-1.id}"
   count                  = "3"  
 
   associate_public_ip_address = true
@@ -32,40 +32,40 @@ resource "aws_instance" "swarm-infra-be-instances" {
   }
 }
 
-resource "aws_subnet" "public-subnet-1" {
-  cidr_block        = "10.0.1.0/24"
+resource "aws_subnet" "infra-subnet-1" {
+  cidr_block        = "10.10.1.0/24"
   vpc_id            = "${var.vpc_jenkins}"
   availability_zone = "${var.region}a"
 
   tags = {
-    Name = "Jenkins-Public-Subnet-1"
+    Name = "Infra-Public-Subnet-1"
   }
 }
 
-resource "aws_internet_gateway" "jenkins-vpc-ig" {
+resource "aws_internet_gateway" "infra-vpc-ig" {
   vpc_id = "${var.vpc_jenkins}"
 
   tags = {
-      Name = "Jenkins-vpc-internet-gateway"
+      Name = "Infra-vpc-internet-gateway"
   }
 }
 
-resource "aws_route_table" "jenkins-route-table" {
+resource "aws_route_table" "infra-route-table" {
   vpc_id = "${var.vpc_jenkins}"
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.jenkins-vpc-ig.id}"
+    gateway_id = "${aws_internet_gateway.infra-vpc-ig.id}"
   }
 
   tags = {
-    Name = "Jenkins-Route-Table"
+    Name = "Infra-Route-Table"
   }
 }
 
-resource "aws_route_table_association" "jenkins-subnet-rt-associate" {
-  subnet_id      = "${aws_subnet.public-subnet-1.id}"
-  route_table_id = "${aws_route_table.jenkins-route-table.id}"
+resource "aws_route_table_association" "infra-subnet-rt-associate" {
+  subnet_id      = "${aws_subnet.infra-subnet-1.id}"
+  route_table_id = "${aws_route_table.infra-route-table.id}"
 }
 
 resource "aws_security_group" "sg_frontend" {

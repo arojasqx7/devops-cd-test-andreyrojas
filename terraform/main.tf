@@ -5,6 +5,16 @@ provider "aws" {
   secret_key = "${var.secret_key}"
 }
 
+terraform {
+  required_version = "~> 0.11"
+  backend "s3" {
+      bucket  = "terraform-state-infra"
+      key     = "global/s3/terraform.tfstate"
+      region  = "us-east-1"
+      encrypt = "true"
+    }
+  }
+
 resource "aws_instance" "swarm-infra-fe-instances" {
   ami                    = "ami-0323c3dd2da7fb37d"
   instance_type          = "t2.medium"

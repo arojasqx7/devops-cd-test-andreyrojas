@@ -112,5 +112,15 @@ pipeline {
                 }
             }
         }
+        stage('Ansible Init Swarms') {
+            agent { 
+                label 'aws-master'
+            }
+            steps {
+                dir('ansible') {
+                    
+                }
+            }
+        }
     }
 }

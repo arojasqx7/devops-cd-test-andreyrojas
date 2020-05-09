@@ -123,7 +123,7 @@ resource "aws_security_group" "sg_backend" {
 }
 
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "terraform-state-infra"
+  bucket = "terraform-state-infra-gl-test"
   versioning {
     enabled = true
   }

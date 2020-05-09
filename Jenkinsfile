@@ -79,7 +79,7 @@ pipeline {
             steps {
                 dir('terraform') {
                     sh """
-                        terraform init -var access_key=${ACCESS_KEY} -var secret_key=${SECRET_KEY} \
+                        terraform init \
                         -backend-config="bucket=terraform-state-infra" \
                         -backend-config="key=global/s3/terraform.tfstate" \
                         -backend-config="region=us-east-1" \

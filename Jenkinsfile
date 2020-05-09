@@ -78,14 +78,11 @@ pipeline {
             }
             steps {
                 dir('terraform') {
-                    sh "terraform init -backend-config='access_key=${ACCESS_KEY}' -backend-config='secret_key=${SECRET_KEY}' -backend-config='region=us-east-1'"
+                    sh "terraform init"
                 }
             }
         }
         stage('Terraform Plan') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }

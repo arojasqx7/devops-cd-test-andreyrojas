@@ -103,9 +103,6 @@ pipeline {
             }
         }
         stage('Terraform Apply') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }

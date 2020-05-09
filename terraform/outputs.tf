@@ -14,4 +14,10 @@ output "infra_public_subnet_name" {
   value = "${aws_subnet.infra-subnet-1.id}"
 }
 
+output "dynamodb_table_name" {
+  value = "${aws_dynamodb_table.terraform_locks.name}"
+}
 
+output "s3_bucket_arn" {
+  value       = "${aws_s3_bucket.terraform_state.arn}"
+}

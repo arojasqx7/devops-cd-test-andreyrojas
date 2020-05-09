@@ -144,3 +144,13 @@ resource "aws_dynamodb_table" "terraform_locks" {
     type = "S"
   }
 }
+
+terraform {
+  backend "s3" {
+    bucket         = "terraform-state-infra"
+    key            = "global/s3/terraform.tfstate"
+    region         = "${var.region}"
+    dynamodb_table = "terraform-state-locks-infra"
+    encrypt        = true
+  }
+}

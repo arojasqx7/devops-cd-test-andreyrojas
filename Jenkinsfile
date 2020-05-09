@@ -83,6 +83,9 @@ pipeline {
             }
         }
         stage('Terraform Plan') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }

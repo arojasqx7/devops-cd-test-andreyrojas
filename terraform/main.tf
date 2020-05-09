@@ -42,20 +42,11 @@ resource "aws_subnet" "infra-subnet-1" {
   }
 }
 
-resource "aws_internet_gateway" "infra-vpc-ig" {
-  vpc_id = "${var.vpc_jenkins}"
-
-  tags = {
-      Name = "Infra-vpc-internet-gateway"
-  }
-}
-
 resource "aws_route_table" "infra-route-table" {
   vpc_id = "${var.vpc_jenkins}"
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.infra-vpc-ig.id}"
   }
 
   tags = {

@@ -84,7 +84,8 @@ pipeline {
                         -backend-config="key=global/s3/terraform.tfstate" \
                         -backend-config="region=us-east-1" \
                         -backend-config="dynamodb_table=terraform-state-dblocks-infra" \
-                        -backend-config="encrypt=true"
+                        -backend-config="encrypt=true" \
+                        -backend=true -force-copy -get=true -input=false
                     """
                 }
             }

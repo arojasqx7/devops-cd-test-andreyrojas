@@ -37,7 +37,7 @@ resource "aws_vpc" "jenkins-ci-cd" {
     enable_dns_hostnames = true
 
     tags = {
-        Name = "Jenkins-infra-VPC"
+        Name = "Jenkins-VPC"
     }
 }
 

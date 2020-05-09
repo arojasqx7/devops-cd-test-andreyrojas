@@ -26,7 +26,7 @@ resource "aws_instance" "swarm-infra-be-instances" {
 
   associate_public_ip_address = true
   tags = {
-      Name = "${lookup(var.instance_names, count.index)}"
+      Name = "${lookup(var.be_instance_names, count.index)}"
   }
 }
 

@@ -7,11 +7,11 @@ output "backend_security_group_name" {
 }
 
 output "infra_route_table_name" {
-  value = "${aws_route_table.infra-route-table.name}"
+  value = "${aws_route_table.infra-route-table.id}"
 }
 
 output "infra_public_subnet_name" {
-  value = "${aws_subnet.infra-subnet-1.name}"
+  value = "${aws_subnet.infra-subnet-1.id}"
 }
 
 

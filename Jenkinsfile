@@ -113,12 +113,15 @@ pipeline {
             }
         }
         stage('Ansible Init Swarms') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
             steps {
                 dir('ansible') {
-                    
+                    sh 'ansible-playbook'
                 }
             }
         }

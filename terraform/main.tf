@@ -32,18 +32,9 @@ resource "aws_instance" "swarm-infra-be-instances" {
   }
 }
 
-resource "aws_vpc" "jenkins-ci-cd" {
-    cidr_block           = "10.0.0.0/16"
-    enable_dns_hostnames = true
-
-    tags = {
-        Name = "Jenkins-VPC"
-    }
-}
-
 resource "aws_subnet" "public-subnet-1" {
   cidr_block        = "10.0.1.0/24"
-  vpc_id            = "${aws_vpc.jenkins-ci-cd.id}"
+  vpc_id            = "${vpc_jenkins}"
   availability_zone = "${var.region}a"
 
   tags = {
@@ -52,7 +43,7 @@ resource "aws_subnet" "public-subnet-1" {
 }
 
 resource "aws_internet_gateway" "jenkins-vpc-ig" {
-  vpc_id = "${aws_vpc.jenkins-ci-cd.id}"
+  vpc_id = "${vpc_jenkins}"
 
   tags = {
       Name = "Jenkins-vpc-internet-gateway"
@@ -60,7 +51,7 @@ resource "aws_internet_gateway" "jenkins-vpc-ig" {
 }
 
 resource "aws_route_table" "jenkins-route-table" {
-  vpc_id = "${aws_vpc.jenkins-ci-cd.id}"
+  vpc_id = "${vpc_jenkins}"
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -80,7 +71,7 @@ resource "aws_route_table_association" "jenkins-subnet-rt-associate" {
 resource "aws_security_group" "sg_frontend" {
   name        = "frontend_rules"
   description = "Allow SSH and Angular inbound traffic"
-  vpc_id      = "${aws_vpc.jenkins-ci-cd.id}"
+  vpc_id      = "${vpc_jenkins}"
 
   ingress {
     from_port   = 22
@@ -107,7 +98,7 @@ resource "aws_security_group" "sg_frontend" {
 resource "aws_security_group" "sg_backend" {
   name        = "backend_rules"
   description = "Allow SSH and Spring Boot inbound traffic"
-  vpc_id      = "${aws_vpc.jenkins-ci-cd.id}"
+  vpc_id      = "${vpc_jenkins}"
 
   ingress {
     from_port   = 22

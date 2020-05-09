@@ -10,6 +10,10 @@ variable "region" {
 variable "keyname" {
   default = "jenkins-master-slave"
 }
+variable "vpc_jenkins" {
+  default = "vpc-0811b47f12823fddd"
+}
+
 variable "fe_instance_names"{
   default = {
     "0" = "Swarm-FrontEnd-Manager"

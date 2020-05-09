@@ -78,7 +78,14 @@ pipeline {
             }
             steps {
                 dir('terraform') {
-                    sh "terraform init -var access_key=${ACCESS_KEY} -var secret_key=${SECRET_KEY}"
+                    sh """
+                        terraform init \
+                        -backend-config='terraform-state-infra' \
+                        -backend-config='key=global/s3/terraform.tfstate' \
+                        -backend-config='region=us-east-1' \
+                        -backend-config='dynamodb_table=terraform-state-locks-infra' \ 
+                        -backend-config='encrypt=true' 
+                       """
                 }
             }
         }

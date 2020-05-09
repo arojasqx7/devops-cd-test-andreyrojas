@@ -1,5 +1,6 @@
 provider "aws" {
   region = "${var.region}"
+  profile = "default"
 }
 
 resource "aws_instance" "swarm-infra-fe-instances" {

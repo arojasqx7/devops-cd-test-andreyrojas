@@ -80,10 +80,10 @@ pipeline {
                 dir('terraform') {
                     sh """
                         terraform init \
-                        -backend-config='terraform-state-infra' 
-                        -backend-config='key=global/s3/terraform.tfstate' 
-                        -backend-config='region=us-east-1' 
-                        -backend-config='dynamodb_table=terraform-state-locks-infra'  
+                        -backend-config='terraform-state-infra' \
+                        -backend-config='key=global/s3/terraform.tfstate' \
+                        -backend-config='region=us-east-1' \
+                        -backend-config='dynamodb_table=terraform-state-dblocks-infra' \
                         -backend-config='encrypt=true' 
                        """
                 }

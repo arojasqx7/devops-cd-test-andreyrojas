@@ -13,6 +13,9 @@ pipeline {
 
     stages {
         stage('Build Docker Images') {
+            when {
+               branch 'master'
+            }
             parallel {
                 stage('Build Frontend') {
                     agent {
@@ -39,6 +42,9 @@ pipeline {
             }
         }
         stage('Publish Images') {
+            when {
+               branch 'master'
+            }
             parallel {
                 stage('Publish Frontend Image') {
                     agent {

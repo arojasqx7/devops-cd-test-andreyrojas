@@ -78,16 +78,16 @@ pipeline {
             }
             steps {
                 dir('terraform') {
-                    sh """
+                    sh '''
                         terraform init \
-                        --backend-config='access_key=${ACCESS_KEY}' \
-                        --backend-config='secret_key=${SECRET_KEY}' \
-                        --backend-config='bucket=terraform-state-infra' \
-                        --backend-config='key=global/s3/terraform.tfstate' \
-                        --backend-config='region=us-east-1' \
-                        --backend-config='dynamodb_table=terraform-state-dblocks-infra' \
-                        --backend-config='encrypt=true' 
-                    """
+                        --backend-config="access_key=AKIATKIJZTESVQMD6FRP" \
+                        --backend-config="secret_key=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" \
+                        --backend-config="bucket=terraform-state-infra" \
+                        --backend-config="key=global/s3/terraform.tfstate" \
+                        --backend-config="region=us-east-1" \
+                        --backend-config="dynamodb_table=terraform-state-dblocks-infra" \
+                        --backend-config="encrypt=true"
+                    '''
                 }
             }
         }

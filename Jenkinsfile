@@ -78,7 +78,7 @@ pipeline {
             }
             steps {
                 dir('terraform') {
-                    sh 'terraform init'
+                    sh "terraform init -var access_key=${ACCESS_KEY} -var secret_key=${SECRET_KEY}"
                 }
             }
         }

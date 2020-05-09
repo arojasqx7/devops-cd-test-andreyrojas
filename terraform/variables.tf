@@ -10,10 +10,18 @@ variable "region" {
 variable "keyname" {
   default = "jenkins-master-slave"
 }
-variable "instance_names"{
+variable "fe_instance_names"{
   default = {
-    "0" = "Swarm-FE-1"
-    "1" = "Swarm-FE-2"
-    "2" = "Swarm-FE-3"
+    "0" = "Swarm-FrontEnd-Manager"
+    "1" = "Swarm-FrontEnd-Worker-1"
+    "2" = "Swarm-FrontEnd-Worker-2"
+  }
+}
+
+variable "be_instance_names"{
+  default = {
+    "0" = "Swarm-BackEnd-Manager"
+    "1" = "Swarm-BackEnd-Worker-1"
+    "2" = "Swarm-BackEnd-Worker-2"
   }
 }

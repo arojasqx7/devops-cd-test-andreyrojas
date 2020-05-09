@@ -2,7 +2,7 @@ pipeline {
     agent none
     
     tools {
-        "org.jenkinsci.plugins.terraform.TerraformInstallation" "terraform-0.12.6"
+        "org.jenkinsci.plugins.terraform.TerraformInstallation" "terraform-0.12.24"
     }
 
     environment {

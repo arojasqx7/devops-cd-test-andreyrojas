@@ -88,7 +88,7 @@ pipeline {
             }
             steps {
                 dir('terraform') {
-
+                    sh "terraform plan -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SECRET_KEY'"
                 }
             }
         }
@@ -98,7 +98,7 @@ pipeline {
             }
             steps {
                 dir('terraform') {
-
+                    sh "terraform apply -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SECRET_KEY' -input=false -auto-approve"
                 }
             }
         }

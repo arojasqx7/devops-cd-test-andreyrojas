@@ -80,7 +80,7 @@ pipeline {
                 dir('terraform') {
                     sh """
                         terraform init \
-                        --backend=s3
+                        --backend=s3 \
                         --backend-config="profile=default" \
                         --backend-config="bucket=terraform-state-infra" \
                         --backend-config="key=global/s3/terraform.tfstate" \

@@ -88,9 +88,7 @@ pipeline {
             }
             steps {
                 dir('terraform') {
-                    sh "export AWS_ACCESS_KEY_ID=$ACCESS_KEY"
-                    sh "export AWS_SECRET_ACCESS_KEY=$SECRET_KEY"
-                    sh 'terraform plan'
+                    sh "terraform plan -var access_key=${ACCESS_KEY} -var secret_key=${SECRET_KEY}"
                 }
             }
         }
@@ -100,9 +98,7 @@ pipeline {
             }
             steps {
                 dir('terraform') {
-                    sh "export AWS_ACCESS_KEY_ID=$ACCESS_KEY"
-                    sh "export AWS_SECRET_ACCESS_KEY=$SECRET_KEY"
-                    sh 'terraform apply -input=false -auto-approve'
+                    sh "terraform apply -var access_key=${ACCESS_KEY} -var secret_key=${SECRET_KEY} -input=false -auto-approve"
                 }
             }
         }

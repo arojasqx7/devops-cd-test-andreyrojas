@@ -9,7 +9,6 @@ pipeline {
         DOCKER_HUB_PASS   = credentials('DockerHubPass')
         ACCESS_KEY        = credentials('AWS_ACCESS_KEY_ID') 
         SECRET_KEY        = credentials('AWS_SECRET_ACCESS_KEY')
-        SLAVES_KEYPAIR    = credentials('aws-slave-sshkey')
     }
 
     stages {

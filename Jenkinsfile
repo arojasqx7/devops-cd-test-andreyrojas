@@ -127,7 +127,7 @@ pipeline {
             }
             steps {
                 dir('ansible') {
-                    sh 'ansible-playbook setup-docker-full-swarm.yml -i hosts'
+                    sh 'ansible-playbook setup-docker-full-swarm.yml -i /etc/ansible/hosts'
                 }
             }
         }

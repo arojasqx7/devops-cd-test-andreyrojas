@@ -127,6 +127,7 @@ pipeline {
             }
             steps {
                 dir('ansible') {
+                    sh 'whoami'
                     sh 'ansible-playbook setup-docker-full-swarm.yml -u EC2-USER'
                 }
             }

@@ -128,9 +128,9 @@ pipeline {
             steps {
                 dir('ansible') {
                     sh 'whoami'
-                    env.ANSIBLE_KEY = credentials('JENKINS_SLAVES_AWS_KEYPAIR')
-                    echo "Ansible Key is: ${env.ANSIBLE_KEY}"
-                    sh "ansible-playbook setup-docker-full-swarm.yml --private-key=${env.ANSIBLE_KEY} -u ec2-user"
+                    def ansible-key = credentials('JENKINS_SLAVES_AWS_KEYPAIR')
+                    echo "Ansible Key is: ${ansible-key}"
+                    sh "ansible-playbook setup-docker-full-swarm.yml --private-key=${ansible-key} -u ec2-user"
                 }
             }
         }

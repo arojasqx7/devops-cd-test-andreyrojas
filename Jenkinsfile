@@ -9,7 +9,6 @@ pipeline {
         DOCKER_HUB_PASS   = credentials('DockerHubPass')
         ACCESS_KEY        = credentials('AWS_ACCESS_KEY_ID') 
         SECRET_KEY        = credentials('AWS_SECRET_ACCESS_KEY')
-        SLAVES_KEYPAIR    = credentials('JENKINS_SLAVES_AWS_KEYPAIR')
     }
 
     stages {
@@ -129,7 +128,8 @@ pipeline {
             steps {
                 dir('ansible') {
                     sh 'whoami'
-                    sh "ansible-playbook -i /etc/ansible/hosts setup-docker-full-swarm.yml  --private-key=$SLAVES_KEYPAIR -u ec2-user"
+                    sh 'ansible-playbook setup-docker-full-swarm.yml -u ec2-user -K'
+                    sh 'whoami'
                 }
             }
         }

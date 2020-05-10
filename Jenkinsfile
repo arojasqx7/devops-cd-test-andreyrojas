@@ -1,5 +1,5 @@
-{{  pipeline {
-    agent none
+pipeline {
+    agent any
     
     tools {
         "org.jenkinsci.plugins.terraform.TerraformInstallation" "terraform-0.12.24"
@@ -135,4 +135,4 @@
             }
         }
     }
-} }}
+}

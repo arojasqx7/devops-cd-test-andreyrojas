@@ -1,4 +1,4 @@
-pipeline {
+{{  pipeline {
     agent none
     
     tools {
@@ -135,4 +135,4 @@ pipeline {
             }
         }
     }
-}
+} }}

@@ -127,7 +127,7 @@ pipeline {
             }
             steps {
                 dir('ansible') {
-                    sh 'ansible -m ping full-swarm'
+                    sh 'ansible -m ping full-swarm -u ec2-user'
                 }
             }
         }

@@ -127,7 +127,7 @@ pipeline {
             }
             steps {
                 dir('ansible') {
-                    sh 'ansible-playbook setup-docker-full-swarm.yml'
+                    sh 'ansible -m ping full-swarm'
                 }
             }
         }

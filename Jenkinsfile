@@ -129,7 +129,7 @@ pipeline {
             steps {
                 dir('ansible') {
                     sh 'whoami'
-                    sh "ansible-playbook setup-docker-full-swarm.yml --private-key=$SLAVES_KEYPAIR -u ec2-user"
+                    sh "ansible-playbook -b -v -u ec2-user setup-docker-full-swarm.yml -kkk"
                 }
             }
         }

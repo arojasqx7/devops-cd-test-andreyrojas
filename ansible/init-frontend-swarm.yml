@@ -33,14 +33,9 @@
   vars:
     manager_ip: "3.227.8.121"
   tasks:
-    - name: Check swarm status on manager node
-      shell: docker info | grep 'Is Manager'
-      register: fe_swarm_status_manager
-
     - name: Init Swarm cluster
       shell: docker swarm init --advertise-addr={{ manager_ip }}:2377
       register: fe_cluster_init
-      when: "'true' not in fe_swarm_status_manager.stdout_lines"
 
     - name: Add initialized host to first_frontend_manager_node temp group
       add_host:

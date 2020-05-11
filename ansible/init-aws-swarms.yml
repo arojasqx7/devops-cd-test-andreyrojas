@@ -5,24 +5,24 @@
   become: yes
   tasks:
    - name: Check swarm status
-      shell: docker info | grep 'Swarm'
-      register: fe_swarm_status
+     shell: docker info | grep 'Swarm'
+     register: fe_swarm_status
     
-    - name: Create FRONTEND MANAGER Swarm bootstrap group
-      add_host:
-        hostname: "{{ item }}"
-        groups: frontend_swarm_manager_bootstrap
-      with_items: "{{ groups['frontend-manager'] }}" 
-      when: "'active' not in fe_swarm_status.stdout_lines"
-      run_once: true
+   - name: Create FRONTEND MANAGER Swarm bootstrap group
+     add_host:
+       hostname: "{{ item }}"
+       groups: frontend_swarm_manager_bootstrap
+     with_items: "{{ groups['frontend-manager'] }}" 
+     when: "'active' not in fe_swarm_status.stdout_lines"
+     run_once: true
       
-    - name: Create FRONTEND WORKERS Swarm bootstrap group.
-      add_host:
-        hostname: "{{ item }}"
-        groups: frontend_swarm_workers_bootstrap
-      with_items:  "{{ groups['frontend-nodes'] }}"  
-      when: "'active' not in fe_swarm_status.stdout_lines"
-      run_once: true
+   - name: Create FRONTEND WORKERS Swarm bootstrap group.
+     add_host:
+       hostname: "{{ item }}"
+       groups: frontend_swarm_workers_bootstrap
+     with_items:  "{{ groups['frontend-nodes'] }}"  
+     when: "'active' not in fe_swarm_status.stdout_lines"
+     run_once: true
 
 # Start the init of the swarm 
 - name:  Init Frontend Docker Swarm Cluster

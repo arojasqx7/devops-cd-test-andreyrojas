@@ -3,7 +3,6 @@ provider "aws" {
   region     = "${var.region}"
   access_key = "${var.access_key}"
   secret_key = "${var.secret_key}"
-  decode_authorization_messages = true
 }
 
 resource "aws_instance" "swarm-infra-fe-instances" {

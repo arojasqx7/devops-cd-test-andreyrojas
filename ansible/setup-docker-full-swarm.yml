@@ -36,16 +36,10 @@
   gather_facts: false
   become: yes
   tasks:
-   - name: Validate if Docker Compose is installed
-     shell: docker-compose version | grep 'docker-compose'
-     register: docker_compose_install
-
    - name: Install Docker Compose
      shell: curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
      args:
        warn: no
-     when: "'version' not in docker_compose_install.stdout_lines"
    
    - name: Changing permission of exec
      shell: chmod +x /usr/local/bin/docker-compose
-     when: "'version' not in docker_compose_install.stdout_lines"

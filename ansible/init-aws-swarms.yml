@@ -43,7 +43,7 @@
       add_host:
         hostname: "{{ groups['frontend_swarm_manager_bootstrap'][0] }}" 
         groups: first_frontend_manager_node
-      when: fe_cluster_init | changed
+      when: fe_cluster_init.changed == true
 
       # Get worker token
     - name: Get FRONTEND Swarm WORKERS token

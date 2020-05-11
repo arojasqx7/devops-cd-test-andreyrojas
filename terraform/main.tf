@@ -61,6 +61,24 @@ resource "aws_route_table_association" "infra-subnet-rt-associate" {
   route_table_id = "${aws_route_table.infra-route-table.id}"
 }
 
+resource "aws_alb_target_group" "frontend_alb_target_group" {  
+  name     = "${var.fe_target_group_name}"  
+  port     = "80"  
+  protocol = "HTTP"  
+  vpc_id   = "${var.vpc_jenkins}"   
+  tags {    
+    name = "${var.fe_target_group_name}"    
+  }    
+  health_check {    
+    healthy_threshold   = 5    
+    unhealthy_threshold = 3    
+    timeout             = 5    
+    interval            = 20    
+    path                = "/"    
+    port                = "80"  
+  }
+}
+
 resource "aws_security_group" "sg_frontend" {
   name        = "frontend_rules"
   description = "Allow SSH and Angular inbound traffic"

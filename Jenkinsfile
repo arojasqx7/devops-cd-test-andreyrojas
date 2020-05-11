@@ -73,9 +73,6 @@ pipeline {
             }
         }
         stage('Terraform Init') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }
@@ -96,9 +93,6 @@ pipeline {
             }
         }
         stage('Terraform Plan') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }
@@ -137,6 +131,9 @@ pipeline {
             }
         }
         stage('Deploy to Swarms') {
+            when {
+               branch 'master'
+            }
             parallel {
                 stage('Deploy Frontend Image') {
                     agent {

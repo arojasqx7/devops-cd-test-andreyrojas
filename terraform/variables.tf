@@ -12,6 +12,10 @@ variable "vpc_jenkins" {
   default = "vpc-0811b47f12823fddd"
 }
 
+variable "fe_target_group_name" {
+  default = "frontend-target-group"
+}
+
 variable "vpc_gateway_id" {
   default = "igw-0df2f630179ae60bb"
 }

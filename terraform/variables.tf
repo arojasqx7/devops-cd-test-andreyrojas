@@ -16,6 +16,21 @@ variable "fe_target_group_name" {
   default = "frontend-target-group"
 }
 
+variable "fe_alb_name" {
+  default = "frontend-load-balancer"
+}
+
+variable "load_balancer_type" {
+  default     = "application"
+}
+
+variable "load_balancer_protocol" {
+  default     = "HTTP"
+}
+
+variable "ip_address_type" {
+  default     = "ipv4"
+}
 variable "vpc_gateway_id" {
   default = "igw-0df2f630179ae60bb"
 }

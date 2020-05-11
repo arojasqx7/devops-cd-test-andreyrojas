@@ -78,8 +78,9 @@ resource "aws_alb_target_group" "frontend_alb_target_group" {
 }
 
 resource "aws_lb_target_group_attachment" "frontend_target_group_attachments" {
+  count            = "3" 
   target_group_arn = "${aws_alb_target_group.frontend_alb_target_group.arn}"
-  target_id        = ["i-00ebb1fa07dca4068", "i-06e61cb86ee6e5ffb", "i-098c86f9d635975db"]
+  target_id        = "${lookup(var.fe_instance_ids, count.index)}" 
   port             = 80
 }
 

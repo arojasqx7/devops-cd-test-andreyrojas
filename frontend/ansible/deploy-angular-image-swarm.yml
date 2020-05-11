@@ -1,0 +1,10 @@
+---
+- name: Deploy Angular application to Frontend swarm
+  hosts: frontend-manager
+  gather_facts: false
+  become: yes
+  tasks:
+   - name: Pull Angular frontend docker image
+     docker_image:
+       name: arojasqx7/frontend-gl
+       source: pull

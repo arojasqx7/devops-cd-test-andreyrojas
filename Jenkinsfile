@@ -122,6 +122,9 @@ pipeline {
             }
         }
         stage('Ansible Init Swarms') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
@@ -130,6 +133,33 @@ pipeline {
                     sh 'ansible-playbook setup-docker-full-swarm.yml'
                     sh 'ansible-playbook init-frontend-swarm.yml'
                     sh 'ansible-playbook init-backend-swarm.yml'
+                }
+            }
+        }
+        stage('Deploy to Swarms') {
+            parallel {
+                stage('Deploy Frontend Image') {
+                    agent {
+                        label 'aws-master'
+                    }
+                    steps {
+                        dir('frontend/ansible') {
+                            sh 'ansible-playbook deploy-angular-image-swarm.yml'
+                        }
+                    }
+                }
+                stage('Deploy Backend Image') {
+                    when {
+                       branch 'master'
+                    }
+                    agent {
+                        label 'aws-slave-1'
+                    }
+                    steps {
+                        dir('backend/ansible') {
+                            sh ''
+                        }
+                    }
                 }
             }
         }

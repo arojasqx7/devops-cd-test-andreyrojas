@@ -149,9 +149,6 @@ pipeline {
                     }
                 }
                 stage('Deploy Backend Image') {
-                    when {
-                       branch 'master'
-                    }
                     agent {
                         label 'aws-slave-1'
                     }

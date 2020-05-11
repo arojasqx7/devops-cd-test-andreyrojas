@@ -5,4 +5,4 @@
   become: yes
   tasks:
    - name: Pull Angular frontend docker image
-     shell: docker pull arojasqx7/frontend-gl
+     shell: docker pull arojasqx7/frontend-gl:13

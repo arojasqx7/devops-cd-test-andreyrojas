@@ -128,7 +128,8 @@ pipeline {
             steps {
                 dir('ansible') {
                     sh 'ansible-playbook setup-docker-full-swarm.yml'
-                    sh 'ansible-playbook init-aws-swarms.yml'
+                    sh 'ansible-playbook init-frontend-swarm.yml'
+                    sh 'ansible-playbook init-backend-swarm.yml'
                 }
             }
         }

@@ -123,7 +123,7 @@ pipeline {
             steps {
                 dir('ansible') {
                     sh 'whoami'
-                    sh "ansible-playbook setup-docker-full-swarm.yml"
+                    sh "ansible -m ping all"
                 }
             }
         }

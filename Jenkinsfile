@@ -129,7 +129,7 @@ pipeline {
             steps {
                 dir('ansible') {
                     sh 'whoami'
-                    sh "ansible -m ping all"
+                    sh "ansible -m ping backend-manager"
                 }
             }
         }

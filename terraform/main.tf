@@ -96,7 +96,7 @@ resource "aws_lb_target_group_attachment" "frontend_target_group_attachments" {
 
 resource "aws_alb" "frontend_alb" {
   name               = "${var.fe_alb_name}"  
-  subnets            = ["${aws_subnet.*.id}"]
+  subnets            = ["${aws_subnet.public.*.id}"]
   security_groups    = ["${aws_security_group.sg_load_balancers.id}"]
   load_balancer_type = "${var.load_balancer_type}"
   internal           = false  

@@ -34,12 +34,8 @@
     manager_ip: "3.227.8.121"
   tasks:
     - name: Init Swarm cluster
-      shell: docker swarm init --advertise-addr={{ manager_ip }}
+      shell: docker swarm init --advertise-addr={{ manager_ip }}:2377
       register: fe_cluster_init
-    
-    - name: Debug fe_cluster_init output
-      debug:
-        msg: Output is {{ fe_cluster_init }}
 
     - name: Add initialized host to first_frontend_manager_node temp group
       add_host:

@@ -51,7 +51,7 @@
     
 # Join BACKEND workers to swarm
 - name: Join BACKEND workers to swarm cluster
-  hosts: backend_swarm_manager_bootstrap
+  hosts: backend_swarm_workers_bootstrap
   gather_facts: false
   become: yes
   vars:

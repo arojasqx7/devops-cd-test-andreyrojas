@@ -74,6 +74,9 @@ pipeline {
             }
         }
         stage('Terraform Init') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
@@ -94,6 +97,9 @@ pipeline {
             }
         }
         stage('Terraform Plan') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
@@ -104,6 +110,9 @@ pipeline {
             }
         }
         stage('Terraform Apply') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
@@ -114,9 +123,6 @@ pipeline {
             }
         }
         stage('Ansible Init Swarms') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }

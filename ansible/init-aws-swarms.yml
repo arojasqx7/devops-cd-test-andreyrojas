@@ -2,6 +2,7 @@
 # This playbook inits Angular Frontend instances into a docker swarm
 - name:  Check Swarm status on ALL FRONTEND nodes
   hosts: frontend-swarm
+  gather_facts: false
   become: yes
   tasks:
    - name: Check swarm status
@@ -27,11 +28,16 @@
 # Start the init of the swarm 
 - name:  Init Frontend Docker Swarm Cluster
   hosts: frontend_swarm_manager_bootstrap[0]
+  gather_facts: false
   become: yes
   tasks:
     - name: Init Swarm cluster
       shell: docker swarm init --advertise-addr=3.227.8.121:2377
       register: fe_cluster_init
+    
+    - name: Debug fe_cluster_init output
+      debug:
+        msg: Output is {{ fe_cluster_init }}
 
     - name: Add initialized host to first_frontend_manager_node temp group
       add_host:
@@ -48,6 +54,7 @@
 # Join frontend workers to swarm
 - name: Join FRONTEND workers to swarm cluster
   hosts: frontend_swarm_workers_bootstrap
+  gather_facts: false
   become: yes
   vars:
     worker_token: "{{ hostvars[groups['first_frontend_manager_node'][0]]['frontend_swarm_worker_token']['stdout'] }}"

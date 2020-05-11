@@ -67,10 +67,6 @@ resource "aws_alb_target_group" "frontend_alb_target_group" {
   protocol = "HTTP"  
   vpc_id   = "${var.vpc_jenkins}"  
 
-  tags {    
-    Name = "${var.fe_target_group_name}"    
-  }
-
   health_check {    
     healthy_threshold   = 5    
     unhealthy_threshold = 3    

@@ -2,7 +2,7 @@ pipeline {
     agent none
     
     tools {
-        "org.jenkinsci.plugins.terraform.TerraformInstallation" "terraform-0.12.6"
+        "org.jenkinsci.plugins.terraform.TerraformInstallation" "terraform-0.12.24"
     }
 
     environment {
@@ -13,6 +13,9 @@ pipeline {
 
     stages {
         stage('Build Docker Images') {
+            when {
+               branch 'master'
+            }
             parallel {
                 stage('Build Frontend') {
                     agent {
@@ -39,6 +42,9 @@ pipeline {
             }
         }
         stage('Publish Images') {
+            when {
+               branch 'master'
+            }
             parallel {
                 stage('Publish Frontend Image') {
                     agent {
@@ -67,32 +73,62 @@ pipeline {
             }
         }
         stage('Terraform Init') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
             steps {
                 dir('terraform') {
-                    sh 'terraform init'
+                    sh "terraform init \
+                        -get=true \
+                        -input=false \
+                        -force-copy \
+                        -backend=true \
+                        -backend-config 'access_key=$ACCESS_KEY' \
+                        -backend-config 'bucket=terraform-state-infra-gl-test' \
+                        -backend-config 'encrypt=true' \
+                        -backend-config 'key=global/s3/terraform.tfstate' \
+                        -backend-config 'region=us-east-1' \
+                        -backend-config 'secret_key=$SECRET_KEY'" 
                 }
             }
         }
         stage('Terraform Plan') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
             steps {
                 dir('terraform') {
-
+                    sh "terraform plan -var access_key=${ACCESS_KEY} -var secret_key=${SECRET_KEY}"
                 }
             }
         }
         stage('Terraform Apply') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
             steps {
                 dir('terraform') {
-
+                    sh "terraform apply -var access_key=${ACCESS_KEY} -var secret_key=${SECRET_KEY} -input=false -auto-approve"
+                }
+            }
+        }
+        stage('Ansible Init Swarms') {
+            agent { 
+                label 'aws-master'
+            }
+            steps {
+                dir('ansible') {
+                    sh 'ansible-playbook setup-docker-full-swarm.yml'
+                    sh 'ansible-playbook init-aws-swarms.yml'
                 }
             }
         }

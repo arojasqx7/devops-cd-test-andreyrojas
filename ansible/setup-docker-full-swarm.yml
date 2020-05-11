@@ -1,0 +1,45 @@
+---
+- name: Install Docker to all cluster hosts (Frontend & Backend)
+  hosts: full-swarm
+  gather_facts: false
+  become: yes
+  tasks:
+   - name: Update all packages
+     yum:
+       name: '*'
+       state: latest
+   
+   - name: Validate if Docker is installed
+     shell: docker info | grep 'Server Version'
+     register: docker_installation
+
+   - name: Install Docker
+     yum:
+       name: docker
+       state: present
+     when: "'19.03.6-ce' not in docker_installation.stdout_lines"
+
+   - name: Enable service docker at reboot 
+     service:
+       name: docker
+       enabled: yes
+     when: "'19.03.6-ce' not in docker_installation.stdout_lines"
+
+   - name: Ensure docker service is started
+     service: 
+       name: docker
+       state: started
+     when: "'19.03.6-ce' not in docker_installation.stdout_lines"
+
+- name: Install Docker Compose Only to Backend swarm
+  hosts: backend-swarm
+  gather_facts: false
+  become: yes
+  tasks:
+   - name: Install Docker Compose
+     shell: curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+     args:
+       warn: no
+   
+   - name: Changing permission of exec
+     shell: chmod +x /usr/local/bin/docker-compose

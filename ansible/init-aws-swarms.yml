@@ -1,0 +1,56 @@
+---
+# This playbook inits Angular Frontend instances into a docker swarm
+- name:  Check Swarm status on ALL FRONTEND nodes
+  hosts: frontend-swarm
+  become: yes
+  tasks:
+   - name: Check swarm status
+      shell: docker info | grep 'Swarm'
+      register: fe_swarm_status
+    
+    - name: Create FRONTEND MANAGER Swarm bootstrap group
+      add_host:
+        hostname: "{{ item }}"
+        groups: frontend_swarm_manager_bootstrap
+      with_items: "{{ groups['frontend-manager'] }}" 
+      when: "'active' not in fe_swarm_status.stdout_lines"
+      run_once: true
+      
+    - name: Create FRONTEND WORKERS Swarm bootstrap group.
+      add_host:
+        hostname: "{{ item }}"
+        groups: frontend_swarm_workers_bootstrap
+      with_items:  "{{ groups['frontend-nodes'] }}"  
+      when: "'active' not in fe_swarm_status.stdout_lines"
+      run_once: true
+
+# Start the init of the swarm 
+- name:  Init Frontend Docker Swarm Cluster
+  hosts: frontend_swarm_manager_bootstrap[0]
+  become: yes
+  tasks:
+    - name: Init Swarm cluster
+      shell: docker swarm init --advertise-addr=3.227.8.121:2377
+      register: fe_cluster_init
+
+    - name: Add initialized host to first_frontend_manager_node temp group
+      add_host:
+        hostname: "{{ groups['frontend_swarm_manager_bootstrap'][0] }}" 
+        groups: first_frontend_manager_node
+      when: fe_cluster_init | changed
+
+      # Get worker token
+    - name: Get FRONTEND Swarm WORKERS token
+      shell: docker swarm join-token -q worker
+      register: frontend_swarm_worker_token
+      when: "'first_frontend_manager_node' in groups"
+    
+# Join frontend workers to swarm
+- name: Join FRONTEND workers to swarm cluster
+  hosts: frontend_swarm_workers_bootstrap
+  become: yes
+  vars:
+    worker_token: "{{ hostvars[groups['first_frontend_manager_node'][0]]['frontend_swarm_worker_token']['stdout'] }}"
+  tasks:
+    - name: Join FRONTEND workers to swarm cluster
+      shell: docker swarm join --advertise-addr=3.227.8.121:2377 --token={{ worker_token }}

@@ -30,9 +30,11 @@
   hosts: frontend_swarm_manager_bootstrap[0]
   gather_facts: false
   become: yes
+  vars:
+    manager_ip: "3.227.8.121"
   tasks:
     - name: Init Swarm cluster
-      shell: docker swarm init --advertise-addr=3.227.8.121:2377
+      shell: docker swarm init --advertise-addr={{ manager_ip }}
       register: fe_cluster_init
     
     - name: Debug fe_cluster_init output
@@ -58,6 +60,7 @@
   become: yes
   vars:
     worker_token: "{{ hostvars[groups['first_frontend_manager_node'][0]]['frontend_swarm_worker_token']['stdout'] }}"
+    manager_ip: "3.227.8.121"
   tasks:
     - name: Join FRONTEND workers to swarm cluster
-      shell: docker swarm join --advertise-addr=3.227.8.121:2377 --token={{ worker_token }}
+      shell: docker swarm join --token={{ worker_token }} {{ manager_ip }}:2377

@@ -154,7 +154,7 @@ pipeline {
                     }
                     steps {
                         dir('backend/ansible') {
-                            sh ''
+                            sh 'ansible-playbook deploy-java-image-swarm.yml'
                         }
                     }
                 }

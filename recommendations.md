@@ -19,3 +19,7 @@ I'd add some monitoring to the health of the instances, custom metrics and why n
 ## Logging
 ### ELK stack 
 To debug issues quickly in prod and any environment we can add logging system using ELK (Elastic search, Logstash and Kibana). We can deploy them in docker containers.
+
+## Security
+### Bastion / Jump Host
+I'd a Bastion host as an extra security layer to access our application instances. 

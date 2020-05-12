@@ -13,9 +13,6 @@ pipeline {
 
     stages {
         stage('Build Docker Images') {
-            when {
-               branch 'master'
-            }
             parallel {
                 stage('Build Frontend') {
                     agent {
@@ -30,6 +27,9 @@ pipeline {
                     }
                 }
                 stage('Build Backend') {
+                    when {
+                       branch 'master'
+                    }
                     agent {
                         label 'aws-slave-1'
                     }
@@ -42,9 +42,6 @@ pipeline {
             }
         }
         stage('Publish Images') {
-            when {
-               branch 'master'
-            }
             parallel {
                 stage('Publish Frontend Image') {
                     agent {
@@ -57,6 +54,9 @@ pipeline {
                     }
                 }
                 stage('Publish Backend Images') {
+                    when {
+                       branch 'master'
+                    }
                     agent {
                         label 'aws-slave-1'
                     }
@@ -103,6 +103,9 @@ pipeline {
             }
         }
         stage('Terraform Apply') {
+            when {
+                branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
@@ -129,7 +132,7 @@ pipeline {
         }
         stage('Deploy to Swarms') {
             when {
-               branch 'master'
+                branch 'master'
             }
             parallel {
                 stage('Deploy Frontend Image') {

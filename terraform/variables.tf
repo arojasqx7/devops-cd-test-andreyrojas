@@ -16,8 +16,16 @@ variable "fe_target_group_name" {
   default = "frontend-target-group"
 }
 
+variable "be_target_group_name" {
+  default = "backend-target-group"
+}
+
 variable "fe_alb_name" {
   default = "frontend-load-balancer"
+}
+
+variable "be_alb_name" {
+  default = "backend-load-balancer"
 }
 
 variable "load_balancer_type" {
@@ -56,5 +64,13 @@ variable "be_instance_names"{
     "0" = "Swarm-BackEnd-Manager"
     "1" = "Swarm-BackEnd-Worker-1"
     "2" = "Swarm-BackEnd-Worker-2"
+  }
+}
+
+variable "be_instance_ids"{
+  default = {
+    "0" = "i-0114a49e148649e76"
+    "1" = "i-08c5fda1792599932"
+    "2" = "i-0dd0ecf1f9f95dbab"
   }
 }

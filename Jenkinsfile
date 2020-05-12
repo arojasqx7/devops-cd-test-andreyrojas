@@ -76,9 +76,6 @@ pipeline {
             }
         }
         stage('Terraform Init') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }
@@ -99,9 +96,6 @@ pipeline {
             }
         }
         stage('Terraform Plan') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }
@@ -112,9 +106,6 @@ pipeline {
             }
         }
         stage('Terraform Apply') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }
@@ -131,14 +122,17 @@ pipeline {
             steps {
                 dir('ansible') {
                     sh 'ansible-playbook setup-docker-full-swarm.yml'
-                    sh 'ansible-playbook init-frontend-swarm.yml'
-                    // sh 'ansible-playbook init-backend-swarm.yml'
+                    // sh 'ansible-playbook init-frontend-swarm.yml'
+                    sh 'ansible-playbook init-backend-swarm.yml'
                 }
             }
         }
         stage('Deploy to Swarms') {
             parallel {
                 stage('Deploy Frontend Image') {
+                    when {
+                        branch 'master'
+                    }
                     agent {
                         label 'aws-master'
                     }
@@ -149,9 +143,6 @@ pipeline {
                     }
                 }
                 stage('Deploy Backend Image') {
-                    when {
-                        branch 'master'
-                    }
                     agent {
                         label 'aws-slave-1'
                     }

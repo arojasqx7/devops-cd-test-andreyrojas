@@ -87,6 +87,22 @@ resource "aws_alb_target_group" "frontend_alb_target_group" {
   }
 }
 
+resource "aws_alb_target_group" "backend_alb_target_group" {  
+  name     = "${var.be_target_group_name}"  
+  port     = "8080"  
+  protocol = "${var.load_balancer_protocol}"  
+  vpc_id   = "${var.vpc_jenkins}"  
+
+  health_check {    
+    healthy_threshold   = 5    
+    unhealthy_threshold = 10    
+    timeout             = 5    
+    interval            = 20    
+    path                = "/"    
+    port                = "8080"  
+  }
+}
+
 resource "aws_lb_target_group_attachment" "frontend_target_group_attachments" {
   count            = "3" 
   target_group_arn = "${aws_alb_target_group.frontend_alb_target_group.arn}"
@@ -94,8 +110,25 @@ resource "aws_lb_target_group_attachment" "frontend_target_group_attachments" {
   port             = 4200
 }
 
+resource "aws_lb_target_group_attachment" "backend_target_group_attachments" {
+  count            = "3" 
+  target_group_arn = "${aws_alb_target_group.backend_alb_target_group.arn}"
+  target_id        = "${lookup(var.be_instance_ids, count.index)}" 
+  port             = 8080
+}
+
 resource "aws_alb" "frontend_alb" {
   name               = "${var.fe_alb_name}"  
+  subnets            = ["${aws_subnet.infra-subnet-1.id}" , "${aws_subnet.lb-subnet-1.id}"]
+  security_groups    = ["${aws_security_group.sg_load_balancers.id}", ]
+  load_balancer_type = "${var.load_balancer_type}"
+  internal           = false  
+  idle_timeout       = "60"  
+  ip_address_type    = "${var.ip_address_type}"  
+}
+
+resource "aws_alb" "backend_alb" {
+  name               = "${var.be_alb_name}"  
   subnets            = ["${aws_subnet.infra-subnet-1.id}" , "${aws_subnet.lb-subnet-1.id}"]
   security_groups    = ["${aws_security_group.sg_load_balancers.id}", ]
   load_balancer_type = "${var.load_balancer_type}"
@@ -115,6 +148,16 @@ resource "aws_alb_listener" "frontend_alb_listener" {
   }
 }
 
+resource "aws_alb_listener" "backend_alb_listener" {  
+  load_balancer_arn = "${aws_alb.backend_alb.arn}"  
+  port              = "8080"  
+  protocol          = "${var.load_balancer_protocol}" 
+  
+  default_action {    
+    target_group_arn = "${aws_alb_target_group.backend_alb_target_group.arn}"
+    type             = "forward"  
+  }
+}
 resource "aws_security_group" "sg_frontend" {
   name        = "frontend_rules"
   description = "Allow SSH and Angular inbound traffic"
@@ -167,12 +210,19 @@ resource "aws_security_group" "sg_backend" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  
+  ingress {
+    from_port   = 2377
+    to_port     = 2377
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   ingress {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = ["${aws_security_group.sg_load_balancers.id}"]
   }
 
   egress {
@@ -191,6 +241,13 @@ resource "aws_security_group" "sg_load_balancers" {
   ingress {
     from_port   = 4200
     to_port     = 4200
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

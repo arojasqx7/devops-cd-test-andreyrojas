@@ -43,3 +43,8 @@
    
    - name: Changing permission of exec
      shell: chmod +x /usr/local/bin/docker-compose
+    
+   - name: Install git
+     yum: 
+       name: git
+       state: present

@@ -7,14 +7,18 @@
     java_image_tag:  "arojasqx7/spring-boot-realworld-example-app:latest"
     mysql_image_tag: "arojasqx7/mysql:latest"
   tasks:
-   - name: Pull Spring Boot Java backend docker image
-     shell: docker pull {{ java_image_tag }}
-
-   - name: Pull MySQL db backend docker image
-     shell: docker pull {{ mysql_image_tag }}
+   - name: clone repository to run docker compose file
+     git: 
+      repo: https://github.com/arojasqx7/devops-cd-test-andreyrojas.git
+      dest: /home/ec2-user/devops-repo
+  
+   - name: deploy backend stack to swarm 
+     shell: |
+      cd /home/ec2-user/devops-repo/backend
+      docker-compose up -d
    
-   - name: Create Java Backend service
-     shell: docker service create --name backend {{ java_image_tag }}
+   #- name: Create Java Backend service
+   #  shell: docker service create --name backend {{ java_image_tag }}
    
-   - name: Create DB Backend service
-     shell: docker service create --name backend_db {{ mysql_image_tag }}
+   #- name: Create DB Backend service
+   #  shell: docker service create --name backend_db {{ mysql_image_tag }}

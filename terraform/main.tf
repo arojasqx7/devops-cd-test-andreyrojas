@@ -73,17 +73,17 @@ resource "aws_route_table_association" "infra-subnet-rt-associate" {
 
 resource "aws_alb_target_group" "frontend_alb_target_group" {  
   name     = "${var.fe_target_group_name}"  
-  port     = "80"  
+  port     = "4200"  
   protocol = "${var.load_balancer_protocol}"  
   vpc_id   = "${var.vpc_jenkins}"  
 
   health_check {    
     healthy_threshold   = 5    
-    unhealthy_threshold = 3    
+    unhealthy_threshold = 10    
     timeout             = 5    
     interval            = 20    
     path                = "/"    
-    port                = "80"  
+    port                = "4200"  
   }
 }
 
@@ -91,7 +91,7 @@ resource "aws_lb_target_group_attachment" "frontend_target_group_attachments" {
   count            = "3" 
   target_group_arn = "${aws_alb_target_group.frontend_alb_target_group.arn}"
   target_id        = "${lookup(var.fe_instance_ids, count.index)}" 
-  port             = 80
+  port             = 4200
 }
 
 resource "aws_alb" "frontend_alb" {
@@ -106,7 +106,7 @@ resource "aws_alb" "frontend_alb" {
 
 resource "aws_alb_listener" "frontend_alb_listener" {  
   load_balancer_arn = "${aws_alb.frontend_alb.arn}"  
-  port              = "80"  
+  port              = "4200"  
   protocol          = "${var.load_balancer_protocol}" 
   
   default_action {    
@@ -128,10 +128,10 @@ resource "aws_security_group" "sg_frontend" {
   }
 
   ingress {
-    from_port   = 4200
-    to_port     = 4200
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = 4200
+    to_port         = 4200
+    protocol        = "tcp"
+    security_groups = ["${aws_security_group.sg_load_balancers.id}"]
   }
 
   egress {
@@ -182,8 +182,8 @@ resource "aws_security_group" "sg_load_balancers" {
   vpc_id      = "${var.vpc_jenkins}"
 
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 4200
+    to_port     = 4200
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

@@ -51,14 +51,6 @@ variable "fe_instance_names"{
   }
 }
 
-variable "fe_instance_ids"{
-  default = {
-    "0" = "i-00ebb1fa07dca4068"
-    "1" = "i-06e61cb86ee6e5ffb"
-    "2" = "i-098c86f9d635975db"
-  }
-}
-
 variable "be_instance_names"{
   default = {
     "0" = "Swarm-BackEnd-Manager"
@@ -67,6 +59,19 @@ variable "be_instance_names"{
   }
 }
 
+/*
+** target_id = "${lookup(var.fe_instance_ids, count.index)}" 
+
+variable "fe_instance_ids"{
+  default = {
+    "0" = "i-00ebb1fa07dca4068"
+    "1" = "i-06e61cb86ee6e5ffb"
+    "2" = "i-098c86f9d635975db"
+  }
+}
+
+** target_id = "${lookup(var.be_instance_ids, count.index)}" 
+
 variable "be_instance_ids"{
   default = {
     "0" = "i-0114a49e148649e76"
@@ -74,3 +79,4 @@ variable "be_instance_ids"{
     "2" = "i-0dd0ecf1f9f95dbab"
   }
 }
+*/

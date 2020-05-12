@@ -125,17 +125,14 @@ pipeline {
             }
         }
         stage('Ansible Init Swarms') {
-            when {
-                branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }
             steps {
                 dir('ansible') {
                     sh 'ansible-playbook setup-docker-full-swarm.yml'
-                    sh 'ansible-playbook init-frontend-swarm.yml'
-                    sh 'ansible-playbook init-backend-swarm.yml'
+                    //sh 'ansible-playbook init-frontend-swarm.yml'
+                    // sh 'ansible-playbook init-backend-swarm.yml'
                 }
             }
         }

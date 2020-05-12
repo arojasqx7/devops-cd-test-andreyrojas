@@ -4,7 +4,7 @@
   gather_facts: false
   become: yes
   vars:
-    fe_image_tag: "arojasqx7/frontend-gl:150"
+    fe_image_tag: "arojasqx7/frontend-gl:159"
   tasks:
    - name: Pull Angular frontend docker image
      shell: docker pull {{ fe_image_tag }}

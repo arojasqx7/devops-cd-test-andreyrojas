@@ -106,14 +106,14 @@ resource "aws_alb_target_group" "backend_alb_target_group" {
 resource "aws_lb_target_group_attachment" "frontend_target_group_attachments" {
   count            = "3" 
   target_group_arn = "${aws_alb_target_group.frontend_alb_target_group.arn}"
-  target_id        = "${lookup(var.fe_instance_ids, count.index)}" 
+  target_id        = ["${aws_instance.swarm-infra-fe-instances.*.public_ip}"]
   port             = 4200
 }
 
 resource "aws_lb_target_group_attachment" "backend_target_group_attachments" {
   count            = "3" 
   target_group_arn = "${aws_alb_target_group.backend_alb_target_group.arn}"
-  target_id        = "${lookup(var.be_instance_ids, count.index)}" 
+  target_id        = ["${aws_instance.swarm-infra-be-instances.*.id}"]
   port             = 8080
 }
 

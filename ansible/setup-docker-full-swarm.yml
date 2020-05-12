@@ -41,8 +41,11 @@
      args:
        warn: no
    
+   - name: Move ansible to bin exec directory
+     shell: mv /usr/local/bin/docker-compose /usr/bin/docker-compose
+
    - name: Changing permission of exec
-     shell: chmod +x /usr/local/bin/docker-compose
+     shell: chmod +x /usr/bin/docker-compose
     
    - name: Install git
      yum: 

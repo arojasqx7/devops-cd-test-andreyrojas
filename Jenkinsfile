@@ -51,9 +51,6 @@ pipeline {
                     }
                 }
                 stage('Publish Backend Images') {
-                    when {
-                       branch 'master'
-                    }
                     agent {
                         label 'aws-slave-1'
                     }

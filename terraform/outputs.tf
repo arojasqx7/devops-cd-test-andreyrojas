@@ -21,3 +21,7 @@ output "infra_route_table_name" {
 output "infra_public_subnet_name" {
   value = "${aws_subnet.infra-subnet-1.id}"
 }
+
+output "frontend_alb_target_group_name" {
+  value = "${aws_alb_target_group.frontend_alb_target_group.name}"
+}

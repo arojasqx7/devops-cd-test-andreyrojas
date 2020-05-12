@@ -43,6 +43,16 @@ resource "aws_subnet" "infra-subnet-1" {
   }
 }
 
+resource "aws_subnet" "lb-subnet-1" {
+  cidr_block        = "10.10.10.0/24"
+  vpc_id            = "${var.vpc_jenkins}"
+  availability_zone = "${var.region}b"
+
+  tags = {
+    Name = "LB-Public-Subnet-1"
+  }
+}
+
 resource "aws_route_table" "infra-route-table" {
   vpc_id = "${var.vpc_jenkins}"
 
@@ -59,6 +69,50 @@ resource "aws_route_table" "infra-route-table" {
 resource "aws_route_table_association" "infra-subnet-rt-associate" {
   subnet_id      = "${aws_subnet.infra-subnet-1.id}"
   route_table_id = "${aws_route_table.infra-route-table.id}"
+}
+
+resource "aws_alb_target_group" "frontend_alb_target_group" {  
+  name     = "${var.fe_target_group_name}"  
+  port     = "80"  
+  protocol = "${var.load_balancer_protocol}"  
+  vpc_id   = "${var.vpc_jenkins}"  
+
+  health_check {    
+    healthy_threshold   = 5    
+    unhealthy_threshold = 3    
+    timeout             = 5    
+    interval            = 20    
+    path                = "/"    
+    port                = "80"  
+  }
+}
+
+resource "aws_lb_target_group_attachment" "frontend_target_group_attachments" {
+  count            = "3" 
+  target_group_arn = "${aws_alb_target_group.frontend_alb_target_group.arn}"
+  target_id        = "${lookup(var.fe_instance_ids, count.index)}" 
+  port             = 80
+}
+
+resource "aws_alb" "frontend_alb" {
+  name               = "${var.fe_alb_name}"  
+  subnets            = ["${aws_subnet.infra-subnet-1.id}" , "${aws_subnet.lb-subnet-1.id}"]
+  security_groups    = ["${aws_security_group.sg_load_balancers.id}", ]
+  load_balancer_type = "${var.load_balancer_type}"
+  internal           = false  
+  idle_timeout       = "60"  
+  ip_address_type    = "${var.ip_address_type}"  
+}
+
+resource "aws_alb_listener" "frontend_alb_listener" {  
+  load_balancer_arn = "${aws_alb.frontend_alb.arn}"  
+  port              = "80"  
+  protocol          = "${var.load_balancer_protocol}" 
+  
+  default_action {    
+    target_group_arn = "${aws_alb_target_group.frontend_alb_target_group.arn}"
+    type             = "forward"  
+  }
 }
 
 resource "aws_security_group" "sg_frontend" {
@@ -120,4 +174,24 @@ resource "aws_security_group" "sg_backend" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }   
+}
+
+resource "aws_security_group" "sg_load_balancers" {
+  name        = "load_balancer_rules"
+  description = "Allow HTTP "
+  vpc_id      = "${var.vpc_jenkins}"
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }

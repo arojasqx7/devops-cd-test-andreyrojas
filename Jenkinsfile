@@ -73,9 +73,6 @@ pipeline {
             }
         }
         stage('Terraform Init') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }
@@ -96,9 +93,6 @@ pipeline {
             }
         }
         stage('Terraform Plan') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }
@@ -109,9 +103,6 @@ pipeline {
             }
         }
         stage('Terraform Apply') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }
@@ -122,6 +113,9 @@ pipeline {
             }
         }
         stage('Ansible Init Swarms') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
@@ -130,6 +124,33 @@ pipeline {
                     sh 'ansible-playbook setup-docker-full-swarm.yml'
                     sh 'ansible-playbook init-frontend-swarm.yml'
                     sh 'ansible-playbook init-backend-swarm.yml'
+                }
+            }
+        }
+        stage('Deploy to Swarms') {
+            when {
+               branch 'master'
+            }
+            parallel {
+                stage('Deploy Frontend Image') {
+                    agent {
+                        label 'aws-master'
+                    }
+                    steps {
+                        dir('frontend/ansible') {
+                            sh 'ansible-playbook deploy-angular-image-swarm.yml'
+                        }
+                    }
+                }
+                stage('Deploy Backend Image') {
+                    agent {
+                        label 'aws-slave-1'
+                    }
+                    steps {
+                        dir('backend/ansible') {
+                            sh 'ansible-playbook deploy-java-image-swarm.yml'
+                        }
+                    }
                 }
             }
         }

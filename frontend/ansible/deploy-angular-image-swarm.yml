@@ -1,0 +1,13 @@
+---
+- name: Deploy Angular application to Frontend swarm
+  hosts: frontend-manager
+  gather_facts: false
+  become: yes
+  vars:
+    fe_image_tag: "arojasqx7/frontend-gl:13"
+  tasks:
+   - name: Pull Angular frontend docker image
+     shell: docker pull {{ fe_image_tag }}
+   
+   - name: Create Frontend service
+     shell: docker service create --name frontend {{ fe_image_tag }}

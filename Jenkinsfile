@@ -13,6 +13,9 @@ pipeline {
 
     stages {
         stage('Build Docker Images') {
+            when {
+               branch 'master'
+            }
             parallel {
                 stage('Build Frontend') {
                     agent {
@@ -27,9 +30,6 @@ pipeline {
                     }
                 }
                 stage('Build Backend') {
-                    when {
-                       branch 'master'
-                    }
                     agent {
                         label 'aws-slave-1'
                     }
@@ -42,6 +42,9 @@ pipeline {
             }
         }
         stage('Publish Images') {
+            when {
+               branch 'master'
+            }
             parallel {
                 stage('Publish Frontend Image') {
                     agent {
@@ -73,6 +76,9 @@ pipeline {
             }
         }
         stage('Terraform Init') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
@@ -93,6 +99,9 @@ pipeline {
             }
         }
         stage('Terraform Plan') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
@@ -103,6 +112,9 @@ pipeline {
             }
         }
         stage('Terraform Apply') {
+            when {
+               branch 'master'
+            }
             agent { 
                 label 'aws-master'
             }
@@ -113,9 +125,6 @@ pipeline {
             }
         }
         stage('Ansible Init Swarms') {
-            when {
-               branch 'master'
-            }
             agent { 
                 label 'aws-master'
             }
@@ -123,14 +132,11 @@ pipeline {
                 dir('ansible') {
                     sh 'ansible-playbook setup-docker-full-swarm.yml'
                     sh 'ansible-playbook init-frontend-swarm.yml'
-                    sh 'ansible-playbook init-backend-swarm.yml'
+                    // sh 'ansible-playbook init-backend-swarm.yml'
                 }
             }
         }
         stage('Deploy to Swarms') {
-            when {
-                branch 'master'
-            }
             parallel {
                 stage('Deploy Frontend Image') {
                     agent {
@@ -143,6 +149,9 @@ pipeline {
                     }
                 }
                 stage('Deploy Backend Image') {
+                    when {
+                        branch 'master'
+                    }
                     agent {
                         label 'aws-slave-1'
                     }
